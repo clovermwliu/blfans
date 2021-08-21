@@ -58,8 +58,6 @@ func main() {
 	flag.Parse()
 
 	//先登录一下
-	//_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
-
 	W = semaphore.NewWeighted(int64(*threads))
 	var model []*Model
 	if *t == "parse" {
@@ -77,6 +75,8 @@ func main() {
 		}
 		_ = json.Unmarshal(j, &model)
 		for _, m := range model {
+			SID = ""
+			_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
 			for _, a := range m.Albums {
 				storeDir := fmt.Sprintf("%v/%v-%v", *dir, a.No, m.Name)
 				for _, p := range a.Photos {
