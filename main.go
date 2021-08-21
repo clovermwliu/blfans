@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -52,24 +53,46 @@ var W *semaphore.Weighted //信号量
 func main() {
 	//2. 获取flags
 	dir := flag.String("dir", ".", "blfans --dir=[store path]")
-	t := flag.String("type", "all", "blfans --type=[all|latest]")
+	t := flag.String("type", "all", "blfans --type=[parse|download]")
 	threads := flag.Int("thread", 1, "blfans --thread=[thread count]")
 	flag.Parse()
 
 	//先登录一下
-	_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
+	//_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
 
 	W = semaphore.NewWeighted(int64(*threads))
-	//var model []*Model
-	if *t == "all" {
-		getAllModels(*dir)
-	} else if *t == "latest" {
+	var model []*Model
+	if *t == "parse" {
+		model = getAllModels()
+		res, _ := json.Marshal(model)
+		_ = ioutil.WriteFile("./result.json", res, fs.ModePerm)
+		return
 	}
-	//6. 下载文件
 
+	if *t == "download" {
+		j, err := readTestFile("./result.json")
+		if err != nil {
+			_ = fmt.Errorf("failed to read test file, error: %v", err.Error())
+			return
+		}
+		_ = json.Unmarshal(j, &model)
+		for _, m := range model {
+			for _, a := range m.Albums {
+				storeDir := fmt.Sprintf("%v/%v-%v", *dir, a.No, m.Name)
+				for _, p := range a.Photos {
+					_ = downloadFile(storeDir, p.Name, p.Url, time.Hour)
+				}
+			}
+
+			for _, v := range m.Videos {
+				storeDir := fmt.Sprintf("%v/video", *dir)
+				_ = downloadFile(storeDir, v.Name, v.Url, time.Hour)
+			}
+		}
+	}
 }
 
-func getAllModels(dir string) []*Model {
+func getAllModels() []*Model {
 	//2. 获取model列表
 	model, err := getModelList("http://www.beautyleg.com/model_list.php")
 	if err != nil {
@@ -79,6 +102,8 @@ func getAllModels(dir string) []*Model {
 
 	//3. 获取每一个model detail
 	for i, m := range model {
+		SID = ""
+		_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
 		album, video, err := getModelDetail(m.Url)
 		if err != nil {
 			fmt.Printf("faield to get model detail, name: %v, error: %v", m.Name, err.Error())
@@ -107,18 +132,6 @@ func getAllModels(dir string) []*Model {
 		//5. 保存起来
 		model[i].Albums = album
 		model[i].Videos = video
-
-		for _, a := range m.Albums {
-			storeDir := fmt.Sprintf("%v/%v-%v", dir, a.No, m.Name)
-			for _, p := range a.Photos {
-				_ = downloadFile(storeDir, p.Name, p.Url, time.Hour)
-			}
-		}
-
-		for _, v := range m.Videos {
-			storeDir := fmt.Sprintf("%v/video", dir)
-			_ = downloadFile(storeDir, v.Name, v.Url, time.Hour)
-		}
 	}
 	return model
 }
@@ -256,7 +269,7 @@ func getAlbumDetail(url string) ([]*Photo, error) {
 	return photos, nil
 }
 
-func getVideoDetail(url string, ) (string, string, error) {
+func getVideoDetail(url string) (string, string, error) {
 	//1. 发起请求
 	res, err := httpGet(url, time.Second*time.Duration(30))
 	//res, err := readTestFile("/Users/didi/Desktop/Desktop/video.html")
@@ -298,7 +311,7 @@ func getFileNameFromUrl(url string) string {
 }
 
 func httpGet(url string, timeout time.Duration) ([]byte, error) {
-	time.Sleep(time.Second) //每次都需要10秒或者以上才能发起请求
+	time.Sleep(time.Second * 3) //每次都需要10秒或者以上才能发起请求
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Printf("failed to new request, error: %v\n", err.Error())
@@ -321,6 +334,7 @@ func httpGet(url string, timeout time.Duration) ([]byte, error) {
 	resp, err := cli.Do(request)
 	if err != nil {
 		fmt.Printf("do request fail, error: %v\n", err.Error())
+		time.Sleep(time.Second * 60)
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK &&

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f5c74220-5d78-44a6-884a-23b520eb2416" name="Default Changelist" comment="" />
+    <list default="true" id="f5c74220-5d78-44a6-884a-23b520eb2416" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/result.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +19,9 @@
     </option>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.16.5/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1wwNXf8wgHXV6bFcJ6SBQ5KZzaE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -49,6 +56,10 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="删掉无效代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="删掉无效代码" />
+  </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
     <environment>
@@ -59,6 +70,14 @@
     </environment>
   </component>
   <component name="WindowStateProjectService">
+    <state x="325" y="35" key="CommitChangelistDialog2" timestamp="1629508511525">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="325" y="35" key="CommitChangelistDialog2/42.25.1398.875@42.25.1398.875" timestamp="1629508511525" />
+    <state x="142" y="125" width="1198" height="675" key="DiffContextDialog" timestamp="1629526103097">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="142" y="125" width="1198" height="675" key="DiffContextDialog/42.25.1398.875@42.25.1398.875" timestamp="1629526103097" />
     <state width="1349" height="373" key="GridCell.Tab.0.bottom" timestamp="1629508454238">
       <screen x="42" y="25" width="1398" height="875" />
     </state>
@@ -103,11 +122,23 @@
       <screen x="49" y="25" width="1871" height="1055" />
     </state>
     <state x="497" y="188" key="SettingsEditor/1920.25.1280.775/49.25.1871.1055@49.25.1871.1055" timestamp="1629365890511" />
+    <state x="341" y="199" key="Vcs.Push.Dialog.v2" timestamp="1629508561508">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="341" y="199" key="Vcs.Push.Dialog.v2/42.25.1398.875@42.25.1398.875" timestamp="1629508561508" />
     <state width="700" height="438" key="XDebugger.FullValuePopup" timestamp="1629469569400">
       <screen x="42" y="25" width="1398" height="875" />
     </state>
     <state width="700" height="438" key="XDebugger.FullValuePopup/42.25.1398.875@42.25.1398.875" timestamp="1629469569400" />
     <state width="936" height="528" key="XDebugger.FullValuePopup/49.25.1871.1055@49.25.1871.1055" timestamp="1629435570873" />
+    <state x="142" y="125" width="1198" height="675" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1629526103097">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="142" y="125" width="1198" height="675" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/42.25.1398.875@42.25.1398.875" timestamp="1629526103097" />
+    <state x="542" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1629508502745">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="542" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/42.25.1398.875@42.25.1398.875" timestamp="1629508502745" />
     <state x="446" y="217" width="597" height="490" key="find.popup" timestamp="1629468837213">
       <screen x="42" y="25" width="1398" height="875" />
     </state>
