@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f5c74220-5d78-44a6-884a-23b520eb2416" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.16.5/libexec" />
+  <component name="ProjectId" id="1wwNXf8wgHXV6bFcJ6SBQ5KZzaE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
+  </component>
+  <component name="RunManager">
+    <configuration name="go build blfans" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="BLFANS" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="blfans" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build blfans" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOPROXY" value="http://goproxy.intra.xiaojukeji.com,direct" />
+        <entry key="GOSUMDB" value="off" />
+      </map>
+    </environment>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1349" height="373" key="GridCell.Tab.0.bottom" timestamp="1629507984466">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.0.bottom/42.25.1398.875@42.25.1398.875" timestamp="1629507984466" />
+    <state width="1821" height="287" key="GridCell.Tab.0.bottom/49.25.1871.1055@49.25.1871.1055" timestamp="1629437653178" />
+    <state width="1349" height="373" key="GridCell.Tab.0.center" timestamp="1629507984466">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.0.center/42.25.1398.875@42.25.1398.875" timestamp="1629507984466" />
+    <state width="1821" height="287" key="GridCell.Tab.0.center/49.25.1871.1055@49.25.1871.1055" timestamp="1629437653177" />
+    <state width="1349" height="373" key="GridCell.Tab.0.left" timestamp="1629507984465">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.0.left/42.25.1398.875@42.25.1398.875" timestamp="1629507984465" />
+    <state width="1821" height="287" key="GridCell.Tab.0.left/49.25.1871.1055@49.25.1871.1055" timestamp="1629437653177" />
+    <state width="1349" height="373" key="GridCell.Tab.0.right" timestamp="1629507984466">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.0.right/42.25.1398.875@42.25.1398.875" timestamp="1629507984466" />
+    <state width="1821" height="287" key="GridCell.Tab.0.right/49.25.1871.1055@49.25.1871.1055" timestamp="1629437653178" />
+    <state width="1349" height="373" key="GridCell.Tab.1.bottom" timestamp="1629508008163">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.1.bottom/42.25.1398.875@42.25.1398.875" timestamp="1629508008163" />
+    <state width="1821" height="467" key="GridCell.Tab.1.bottom/49.25.1871.1055@49.25.1871.1055" timestamp="1629435737276" />
+    <state width="1349" height="373" key="GridCell.Tab.1.center" timestamp="1629508008157">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.1.center/42.25.1398.875@42.25.1398.875" timestamp="1629508008157" />
+    <state width="1821" height="467" key="GridCell.Tab.1.center/49.25.1871.1055@49.25.1871.1055" timestamp="1629435737275" />
+    <state width="1349" height="373" key="GridCell.Tab.1.left" timestamp="1629508008156">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.1.left/42.25.1398.875@42.25.1398.875" timestamp="1629508008156" />
+    <state width="1821" height="467" key="GridCell.Tab.1.left/49.25.1871.1055@49.25.1871.1055" timestamp="1629435737275" />
+    <state width="1349" height="373" key="GridCell.Tab.1.right" timestamp="1629508008160">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="1349" height="373" key="GridCell.Tab.1.right/42.25.1398.875@42.25.1398.875" timestamp="1629508008160" />
+    <state width="1821" height="467" key="GridCell.Tab.1.right/49.25.1871.1055@49.25.1871.1055" timestamp="1629435737275" />
+    <state x="497" y="188" key="SettingsEditor" timestamp="1629365890511">
+      <screen x="49" y="25" width="1871" height="1055" />
+    </state>
+    <state x="497" y="188" key="SettingsEditor/1920.25.1280.775/49.25.1871.1055@49.25.1871.1055" timestamp="1629365890511" />
+    <state width="700" height="438" key="XDebugger.FullValuePopup" timestamp="1629469569400">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state width="700" height="438" key="XDebugger.FullValuePopup/42.25.1398.875@42.25.1398.875" timestamp="1629469569400" />
+    <state width="936" height="528" key="XDebugger.FullValuePopup/49.25.1871.1055@49.25.1871.1055" timestamp="1629435570873" />
+    <state x="446" y="217" width="597" height="490" key="find.popup" timestamp="1629468837213">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="446" y="217" width="597" height="490" key="find.popup/42.25.1398.875@42.25.1398.875" timestamp="1629468837213" />
+    <state x="493" y="219" width="670" height="676" key="search.everywhere.popup" timestamp="1629469743164">
+      <screen x="42" y="25" width="1398" height="875" />
+    </state>
+    <state x="493" y="219" width="670" height="676" key="search.everywhere.popup/42.25.1398.875@42.25.1398.875" timestamp="1629469743164" />
+    <state x="653" y="259" key="search.everywhere.popup/49.25.1871.1055@49.25.1871.1055" timestamp="1629427615847" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/main.go</url>
+          <line>262</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/main.go</url>
+          <line>110</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/main.go</url>
+          <line>361</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoApplicationRunConfiguration">
+        <watch expression="SID" language="go" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>
