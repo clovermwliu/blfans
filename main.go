@@ -53,43 +53,69 @@ var W *semaphore.Weighted //信号量
 func main() {
 	//2. 获取flags
 	dir := flag.String("dir", ".", "blfans --dir=[store path]")
-	t := flag.String("type", "all", "blfans --type=[parse|download]")
+	t := flag.String("type", "all", "blfans --type=[parse|download|dtest|update]")
 	threads := flag.Int("thread", 1, "blfans --thread=[thread count]")
+	file := flag.String("file", "", "blfans --file=[file path name]")
+	url := flag.String("url", "", "blfans --testUrl=[url]")
 	flag.Parse()
+
+	//登录一下
+	SID = ""
+	_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
 
 	//先登录一下
 	W = semaphore.NewWeighted(int64(*threads))
-	var model []*Model
 	if *t == "parse" {
+		var model []*Model
 		model = getAllModels()
-		res, _ := json.Marshal(model)
-		_ = ioutil.WriteFile("./result.json", res, fs.ModePerm)
-		return
+		for _, m := range model {
+			b, _ := json.Marshal(model)
+			_ = ioutil.WriteFile("./"+m.Name+".json", b, fs.ModePerm)
+		}
 	}
 
 	if *t == "download" {
-		j, err := readTestFile("./result.json")
+		j, err := readFile(*file)
 		if err != nil {
-			_ = fmt.Errorf("failed to read test file, error: %v", err.Error())
+			fmt.Printf("failed to read test file, error: %v", err.Error())
 			return
 		}
-		_ = json.Unmarshal(j, &model)
-		for _, m := range model {
-			SID = ""
-			_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
-			for _, a := range m.Albums {
-				storeDir := fmt.Sprintf("%v/%v-%v", *dir, a.No, m.Name)
-				for _, p := range a.Photos {
-					_ = downloadFile(storeDir, p.Name, p.Url, time.Hour)
-				}
-			}
-
-			for _, v := range m.Videos {
-				storeDir := fmt.Sprintf("%v/video", *dir)
-				_ = downloadFile(storeDir, v.Name, v.Url, time.Hour)
+		var m Model
+		_ = json.Unmarshal(j, &m)
+		for _, a := range m.Albums {
+			storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, m.Name, a.No, m.Name)
+			for _, p := range a.Photos {
+				_ = downloadFile(storeDir, p.Name, p.Url, time.Hour)
 			}
 		}
+
+		for _, v := range m.Videos {
+			storeDir := fmt.Sprintf("%v/video", *dir)
+			_ = downloadFile(storeDir, v.Name, v.Url, time.Hour)
+		}
 	}
+
+	if *t == "dtest" && *url != "" {
+		//下载测试
+		_ = downloadFile(*dir, "test", *url, time.Minute*10)
+	}
+
+	if *t == "update" && *url != "" {
+		//打开详情页
+		photos, no, model, err := getAlbumDetail(*url)
+		if err != nil {
+			fmt.Printf("failed to get url detail, error: %v", err.Error())
+			return
+		}
+
+		//下载文件
+		for _, photo := range photos {
+			storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, model, no, model)
+			_ = downloadFile(storeDir, photo.Name, photo.Url, time.Minute*10)
+		}
+	}
+
+	time.Sleep(time.Hour)
 }
 
 func getAllModels() []*Model {
@@ -112,7 +138,7 @@ func getAllModels() []*Model {
 
 		//4. 获取每一个图片和视频的下载链接
 		for ai, a := range album {
-			photo, err := getAlbumDetail(a.Url)
+			photo, _, _, err := getAlbumDetail(a.Url)
 			if err != nil {
 				fmt.Printf("faield to get photo detail, name: %v, error: %v", m.Name, err.Error())
 				continue
@@ -139,7 +165,7 @@ func getAllModels() []*Model {
 func getModelList(url string) ([]*Model, error) {
 	//1. 发起请求
 	res, err := httpGet(url, time.Second*time.Duration(30))
-	//res, err := readTestFile("/Users/didi/Desktop/Desktop/BEAUTYLEG 模特兒列表.html")
+	//res, err := readFile("/Users/didi/Desktop/Desktop/BEAUTYLEG 模特兒列表.html")
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +192,7 @@ func getModelList(url string) ([]*Model, error) {
 func getModelDetail(url string) ([]*Album, []*Video, error) {
 	//1. 发起请求
 	res, err := httpGet(url, time.Second*time.Duration(30))
-	//res, err := readTestFile("/Users/didi/Desktop/Desktop/model.html")
+	//res, err := readFile("/Users/didi/Desktop/Desktop/model.html")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -239,17 +265,25 @@ func getModelDetail(url string) ([]*Album, []*Video, error) {
 	return albums, videos, nil
 }
 
-func getAlbumDetail(url string) ([]*Photo, error) {
+func getAlbumDetail(url string) ([]*Photo, string, string, error) {
 	//1. 发起请求
 	res, err := httpGet(url, time.Second*time.Duration(30))
-	//res, err := readTestFile("/Users/didi/Desktop/Desktop/BEAUTYLEG　腿模 - 2052 Iris.html")
+	//res, err := readFile("/Users/didi/Desktop/Desktop/BEAUTYLEG　腿模 - 2052 Iris.html")
 	if err != nil {
-		return nil, err
+		return nil, "", "", err
 	}
 
 	//2. 解析html
 	var photos = make([]*Photo, 0)
 	doc := soup.HTMLParse(string(res))
+
+	//先搜索model no 和model name
+	spans := doc.Find("table").Find("tbody").Find("td").FindNextElementSibling().FindAll("span")
+	if len(spans) < 2 {
+		return nil, "", "", errors.New("failed to find model name and album no")
+	}
+	no := spans[0].Text()
+	model := spans[1].Text()
 	tbs := doc.FindAll("table")
 	for _, tb := range tbs {
 		if tb.Attrs()["class"] != "table_all" { //无用的table
@@ -266,13 +300,13 @@ func getAlbumDetail(url string) ([]*Photo, error) {
 			}
 		}
 	}
-	return photos, nil
+	return photos, no, model, nil
 }
 
 func getVideoDetail(url string) (string, string, error) {
 	//1. 发起请求
 	res, err := httpGet(url, time.Second*time.Duration(30))
-	//res, err := readTestFile("/Users/didi/Desktop/Desktop/video.html")
+	//res, err := readFile("/Users/didi/Desktop/Desktop/video.html")
 	if err != nil {
 		return "", "", err
 	}
@@ -310,6 +344,23 @@ func getFileNameFromUrl(url string) string {
 	return s2[len(s2)-1]
 }
 
+func getFileSize(url string, timeout time.Duration) (int64, error) {
+	request, err := http.NewRequest("HEAD", url, nil)
+	if err != nil {
+		fmt.Printf("failed to new request, error: %v\n", err.Error())
+		return 0, err
+	}
+
+	resp, err := doRequest(request, timeout, 0, 0)
+	if err != nil {
+		fmt.Printf("failed to do request, url: %v, error: %v", url, err.Error())
+		return 0, err
+	}
+
+	//获取content length
+	return strconv.ParseInt(resp.Header.Get("Content-Length"), 10, 0)
+}
+
 func httpGet(url string, timeout time.Duration) ([]byte, error) {
 	time.Sleep(time.Second * 3) //每次都需要10秒或者以上才能发起请求
 	request, err := http.NewRequest("GET", url, nil)
@@ -317,7 +368,42 @@ func httpGet(url string, timeout time.Duration) ([]byte, error) {
 		fmt.Printf("failed to new request, error: %v\n", err.Error())
 		return nil, err
 	}
+	resp, err := doRequest(request, timeout, 0, 0)
+	if err != nil {
+		fmt.Printf("failed to do request, url: %v, error: %v", url, err.Error())
+		return nil, err
+	}
+	//4. 解析响应
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("read response fail, url: %v, error: %v\n", url, err.Error())
+		return nil, err
+	}
+	return data, nil
+}
 
+func doDownload(url string, timeout time.Duration, start int64, end int64) ([]byte, error) {
+	time.Sleep(time.Second * 3) //每次都需要10秒或者以上才能发起请求
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("failed to new request, error: %v\n", err.Error())
+		return nil, err
+	}
+	resp, err := doRequest(request, timeout, start, end)
+	if err != nil {
+		fmt.Printf("failed to do request, url: %v, error: %v", url, err.Error())
+		return nil, err
+	}
+	//4. 解析响应
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("read response fail, url: %v, error: %v\n", url, err.Error())
+		return nil, err
+	}
+	return data, nil
+}
+
+func doRequest(request *http.Request, timeout time.Duration, start int64, end int64) (*http.Response, error) {
 	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36 Edg/92.0.902.73")
 	request.Header.Set("Upgrade-Insecure-Requests", "1")
 	request.Header.Set("Referer", "http://beautyleg.com/model_list.php")
@@ -327,6 +413,9 @@ func httpGet(url string, timeout time.Duration) ([]byte, error) {
 	}
 	//设置用户名和密码
 	request.SetBasicAuth("qq375300791", "lmw1234")
+	if start != 0 || end != 0 {
+		request.Header.Set("Range", fmt.Sprintf("bytes=%v-%v", start, end))
+	}
 	//create client
 	cli := &http.Client{
 		Timeout: timeout,
@@ -340,8 +429,9 @@ func httpGet(url string, timeout time.Duration) ([]byte, error) {
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusAccepted &&
 		resp.StatusCode != http.StatusCreated &&
-		resp.StatusCode != http.StatusNoContent {
-		fmt.Printf("response status code is not OK, url: %v, status code: %v\n", url, resp.StatusCode)
+		resp.StatusCode != http.StatusNoContent &&
+		resp.StatusCode != http.StatusPartialContent {
+		fmt.Printf("response status code is not OK, status code: %v\n", resp.StatusCode)
 		return nil, errors.New(fmt.Sprintf("[%v]%s", resp.StatusCode, resp.Status))
 	}
 
@@ -352,17 +442,11 @@ func httpGet(url string, timeout time.Duration) ([]byte, error) {
 		}
 	}
 
-	//4. 解析响应
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("read response fail, url: %v, error: %v\n", url, err.Error())
-		return nil, err
-	}
-	return data, nil
+	return resp, nil
 }
 func downloadFile(dir, file string, url string, timeout time.Duration) error {
 	if err := W.Acquire(context.Background(), 1); err != nil {
-		_ = fmt.Errorf("failed to acquire thread, err: %v", err.Error())
+		fmt.Printf("failed to acquire thread, err: %v", err.Error())
 		return err
 	}
 
@@ -372,27 +456,63 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 		if _, err := os.Stat(dir); os.IsNotExist(err) {
 			_ = os.MkdirAll(dir, fs.ModePerm)
 		}
-		//检查文件是否已经存在
-		_, err := os.Stat(dir + "/" + file)
-		if err == nil || os.IsExist(err) {
-			return
-		}
-
-		fmt.Printf("download file: %v\n", url)
-		res, err := httpGet(url, timeout)
+		//先获取size
+		size, err := getFileSize(url, timeout)
 		if err != nil {
-			_ = fmt.Errorf("failed to download file, url: %v", url)
+			fmt.Printf("failed to get file size, error: %v", err.Error())
 			return
 		}
 
-		if err := ioutil.WriteFile(dir+"/"+file, res, fs.ModePerm); err != nil {
-			_ = fmt.Errorf("failed to save file, path: %v", dir+"/"+file)
-			return
+		//检查文件是否已经存在
+		dst := dir + "/" + file
+		dstInfo, err := os.Stat(dst)
+		var start int64
+		if os.IsExist(err) {
+			if size == dstInfo.Size() {
+				//文件存在并且size 相同
+				return
+			}
+			//文件不完整
+			start = dstInfo.Size()
+		}
+
+		fmt.Printf("download file: %v to %s, size: %v\n", url, dst, size)
+		var end int64
+		var idx = 0
+		var r = int64(10 * 1024 * 1024)
+		for ; start < size; start = end + 1 {
+			if size-start <= r {
+				end = size - 1
+			} else {
+				end = start + r - 1
+			}
+			fmt.Printf("download file part %v, file: %s, start: %v, size: %v, total: %v\n", idx, dst, start, end-start+1, size)
+			f, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE, 0755)
+			if err != nil {
+				fmt.Printf("failed to open file, error: %v", err.Error())
+				break
+			}
+
+			//下载
+			res, err := doDownload(url, timeout, start, end)
+			if err != nil {
+				fmt.Printf("failed to download file, url: %v", url)
+				break
+			}
+
+			if _, err := f.WriteAt(res, start); err != nil {
+				fmt.Printf("failed to save file, path: %v, start: %v, error: %v", dst, start, err.Error())
+				break
+			}
+
+			_ = f.Close()
+
+			idx += 1
 		}
 	}()
 	return nil
 }
 
-func readTestFile(file string) ([]byte, error) {
+func readFile(file string) ([]byte, error) {
 	return ioutil.ReadFile(file)
 }
