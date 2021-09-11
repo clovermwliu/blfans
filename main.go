@@ -70,7 +70,8 @@ func main() {
 		model = getAllModels()
 		for _, m := range model {
 			b, _ := json.Marshal(model)
-			_ = ioutil.WriteFile("./"+m.Name+".json", b, fs.ModePerm)
+			file := fmt.Sprintf("%v/%v-%v.json", *dir, m.Name, m.No)
+			_ = ioutil.WriteFile(file, b, fs.ModePerm)
 		}
 	}
 
@@ -183,7 +184,9 @@ func getModelList(url string) ([]*Model, error) {
 		for _, td := range tds {
 			url := td.Find("a").Attrs()["href"]
 			name := td.Find("br").FindNextSibling().HTML()
-			models = append(models, &Model{Name: name, Url: fmt.Sprintf("%v%v", "http://www.beautyleg.com", url)})
+			no := getUrlQueryParam(url, "no")
+			models = append(models,
+				&Model{Name: name, No: no, Url: fmt.Sprintf("%v%v", "http://www.beautyleg.com", url)})
 		}
 	}
 	return models, nil
@@ -257,7 +260,7 @@ func getModelDetail(url string) ([]*Album, []*Video, error) {
 					continue
 				}
 				//保存起来
-				videos = append(videos, &Video{No: id, Url: fmt.Sprintf("%v%v", "http://www.beautyleg.com/member", url)})
+				videos = append(videos, &Video{No: id, Url: fmt.Sprintf("%v%v", "http://www.beautyleg.com/member/", url)})
 			}
 		}
 	}
@@ -315,7 +318,7 @@ func getVideoDetail(url string) (string, string, error) {
 	doc := soup.HTMLParse(string(res))
 	name := doc.Find("center").Text()
 	href := doc.Find("center").Find("a").Attrs()["href"]
-	return name, fmt.Sprintf("%v/%v", "http://www.beautyleg.com/member", href), nil
+	return name, fmt.Sprintf("%v/%v", "http://www.beautyleg.com", href), nil
 }
 
 func getFieldValueFromUrl(url string, fieldName string) string {
@@ -515,4 +518,24 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 
 func readFile(file string) ([]byte, error) {
 	return ioutil.ReadFile(file)
+}
+
+func getUrlQueryParam(url string, key string) string {
+	var res string
+	ps := strings.Split(url, "?")
+	if len(ps) < 2 {
+		return ""
+	}
+
+	queries := strings.Split(ps[1], "&")
+	for _, v := range queries {
+		pair := strings.Split(v, "=")
+		if pair[0] == key {
+			if len(pair) >= 2 {
+				res = pair[1]
+			}
+			break
+		}
+	}
+	return res
 }
