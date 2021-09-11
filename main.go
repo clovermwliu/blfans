@@ -59,7 +59,6 @@ func main() {
 	url := flag.String("url", "", "blfans --testUrl=[url]")
 	flag.Parse()
 
-
 	//先登录一下
 	W = semaphore.NewWeighted(int64(*threads))
 	if *t == "parse" {
@@ -90,14 +89,14 @@ func main() {
 				fmt.Printf("download album, No: %v, model: %v\n", a.No, m.Name)
 				storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, m.Name, a.No, m.Name)
 				for _, p := range a.Photos {
-					_ = downloadFile(storeDir, p.Name, p.Url, time.Second * 600)
+					_ = downloadFile(storeDir, p.Name, p.Url, time.Second*600)
 				}
 			}
 
 			for _, v := range m.Videos {
 				fmt.Printf("download Video, No: %v, model: %v\n", v.Name, m.Name)
 				storeDir := fmt.Sprintf("%v/video", *dir)
-				_ = downloadFile(storeDir, v.Name, v.Url, time.Second * 600)
+				_ = downloadFile(storeDir, v.Name, v.Url, time.Second*600)
 			}
 		}
 	}
@@ -462,6 +461,14 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 		if _, err := os.Stat(dir); os.IsNotExist(err) {
 			_ = os.MkdirAll(dir, fs.ModePerm)
 		}
+		//检查文件是否已经存在
+		dst := dir + "/" + file
+		dstInfo, err := os.Stat(dst)
+		var start int64
+		if dstInfo != nil {
+			return
+		}
+
 		//先获取size
 		size, err := getFileSize(url, timeout)
 		if err != nil {
@@ -469,10 +476,9 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 			return
 		}
 
-		//检查文件是否已经存在
-		dst := dir + "/" + file
-		dstInfo, err := os.Stat(dst)
-		var start int64
+		//检查有没有下载中的文件
+		tmp := dst + ".tmp"
+		dstInfo, err = os.Stat(tmp)
 		if dstInfo != nil {
 			if size == dstInfo.Size() {
 				//文件存在并且size 相同
@@ -481,7 +487,6 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 			//文件不完整
 			start = dstInfo.Size()
 		}
-
 
 		fmt.Printf("download file: %v to %s, size: %v\n", url, dst, size)
 		var end int64
@@ -494,7 +499,7 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 				end = start + r - 1
 			}
 			//fmt.Printf("download file part %v, file: %s, start: %v, size: %v, total: %v\n", idx, dst, start, end-start+1, size)
-			f, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE, 0755)
+			f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE, 0755)
 			if err != nil {
 				fmt.Printf("failed to open file, error: %v", err.Error())
 				break
@@ -516,6 +521,9 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 
 			idx += 1
 		}
+
+		//将文件从命名
+		_ = os.Rename(tmp, dst)
 	}()
 	return nil
 }

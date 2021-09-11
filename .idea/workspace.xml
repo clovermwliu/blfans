@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f5c74220-5d78-44a6-884a-23b520eb2416" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-    </list>
+    <list default="true" id="f5c74220-5d78-44a6-884a-23b520eb2416" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,12 +73,12 @@
       <screen x="57" y="25" width="1863" height="1055" />
     </state>
     <state x="453" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.25.1280.775/57.25.1863.1055@57.25.1863.1055" timestamp="1631268325028" />
-    <state x="331" y="35" key="CommitChangelistDialog2" timestamp="1631276246613">
+    <state x="331" y="35" key="CommitChangelistDialog2" timestamp="1631322927959">
       <screen x="50" y="25" width="1390" height="875" />
     </state>
     <state x="434" y="37" key="CommitChangelistDialog2/1920.25.1280.775/57.25.1863.1055@57.25.1863.1055" timestamp="1631267466179" />
     <state x="325" y="35" key="CommitChangelistDialog2/42.25.1398.875@42.25.1398.875" timestamp="1629526196312" />
-    <state x="331" y="35" key="CommitChangelistDialog2/50.25.1390.875@50.25.1390.875" timestamp="1631276246613" />
+    <state x="331" y="35" key="CommitChangelistDialog2/50.25.1390.875@50.25.1390.875" timestamp="1631322927959" />
     <state x="190" y="146" width="1198" height="675" key="DiffContextDialog" timestamp="1631267465962">
       <screen x="57" y="25" width="1863" height="1055" />
     </state>
@@ -135,15 +132,20 @@
     <state width="1821" height="465" key="GridCell.Tab.1.right/1920.25.1280.775/57.25.1863.1055@57.25.1863.1055" timestamp="1631268552137" />
     <state width="1349" height="373" key="GridCell.Tab.1.right/42.25.1398.875@42.25.1398.875" timestamp="1629508454236" />
     <state width="1821" height="467" key="GridCell.Tab.1.right/49.25.1871.1055@49.25.1871.1055" timestamp="1629435737275" />
-    <state x="497" y="188" key="SettingsEditor" timestamp="1629365890511">
-      <screen x="49" y="25" width="1871" height="1055" />
+    <state x="538" y="187" key="RollbackChangesDialog" timestamp="1631362201861">
+      <screen x="50" y="25" width="1390" height="875" />
+    </state>
+    <state x="538" y="187" key="RollbackChangesDialog/50.25.1390.875@50.25.1390.875" timestamp="1631362201861" />
+    <state x="383" y="160" key="SettingsEditor" timestamp="1631362389940">
+      <screen x="50" y="25" width="1390" height="875" />
     </state>
     <state x="497" y="188" key="SettingsEditor/1920.25.1280.775/49.25.1871.1055@49.25.1871.1055" timestamp="1629365890511" />
-    <state x="347" y="199" key="Vcs.Push.Dialog.v2" timestamp="1631276295685">
+    <state x="383" y="160" key="SettingsEditor/50.25.1390.875@50.25.1390.875" timestamp="1631362389940" />
+    <state x="347" y="199" key="Vcs.Push.Dialog.v2" timestamp="1631322970613">
       <screen x="50" y="25" width="1390" height="875" />
     </state>
     <state x="341" y="199" key="Vcs.Push.Dialog.v2/42.25.1398.875@42.25.1398.875" timestamp="1629526197695" />
-    <state x="347" y="199" key="Vcs.Push.Dialog.v2/50.25.1390.875@50.25.1390.875" timestamp="1631276295685" />
+    <state x="347" y="199" key="Vcs.Push.Dialog.v2/50.25.1390.875@50.25.1390.875" timestamp="1631322970613" />
     <state width="933" height="529" key="XDebugger.FullValuePopup" timestamp="1631268408247">
       <screen x="57" y="25" width="1863" height="1055" />
     </state>
@@ -154,11 +156,12 @@
       <screen x="42" y="25" width="1398" height="875" />
     </state>
     <state x="142" y="125" width="1198" height="675" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/42.25.1398.875@42.25.1398.875" timestamp="1629526103097" />
-    <state x="723" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1631261852080">
-      <screen x="57" y="25" width="1863" height="1055" />
+    <state x="547" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1631362335474">
+      <screen x="50" y="25" width="1390" height="875" />
     </state>
     <state x="723" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1920.25.1280.775/57.25.1863.1055@57.25.1863.1055" timestamp="1631261852080" />
     <state x="542" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/42.25.1398.875@42.25.1398.875" timestamp="1629508502745" />
+    <state x="547" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/50.25.1390.875@50.25.1390.875" timestamp="1631362335474" />
     <state x="595" y="256" width="796" height="591" key="find.popup" timestamp="1631262316717">
       <screen x="57" y="25" width="1863" height="1055" />
     </state>
