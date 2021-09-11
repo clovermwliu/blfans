@@ -59,9 +59,6 @@ func main() {
 	url := flag.String("url", "", "blfans --testUrl=[url]")
 	flag.Parse()
 
-	//登录一下
-	SID = ""
-	_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
 
 	//先登录一下
 	W = semaphore.NewWeighted(int64(*threads))
@@ -81,18 +78,27 @@ func main() {
 			fmt.Printf("failed to read test file, error: %v", err.Error())
 			return
 		}
-		var m Model
-		_ = json.Unmarshal(j, &m)
-		for _, a := range m.Albums {
-			storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, m.Name, a.No, m.Name)
-			for _, p := range a.Photos {
-				_ = downloadFile(storeDir, p.Name, p.Url, time.Hour)
-			}
+		var model []*Model
+		if err = json.Unmarshal(j, &model); err != nil {
+			fmt.Printf("failed to unmarshal model, error: %v\n", err.Error())
 		}
+		for _, m := range model {
+			//登录一下
+			SID = ""
+			_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
+			for _, a := range m.Albums {
+				fmt.Printf("download album, No: %v, model: %v\n", a.No, m.Name)
+				storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, m.Name, a.No, m.Name)
+				for _, p := range a.Photos {
+					_ = downloadFile(storeDir, p.Name, p.Url, time.Second * 600)
+				}
+			}
 
-		for _, v := range m.Videos {
-			storeDir := fmt.Sprintf("%v/video", *dir)
-			_ = downloadFile(storeDir, v.Name, v.Url, time.Hour)
+			for _, v := range m.Videos {
+				fmt.Printf("download Video, No: %v, model: %v\n", v.Name, m.Name)
+				storeDir := fmt.Sprintf("%v/video", *dir)
+				_ = downloadFile(storeDir, v.Name, v.Url, time.Second * 600)
+			}
 		}
 	}
 
@@ -116,7 +122,6 @@ func main() {
 		}
 	}
 
-	time.Sleep(time.Hour)
 }
 
 func getAllModels() []*Model {
@@ -129,8 +134,6 @@ func getAllModels() []*Model {
 
 	//3. 获取每一个model detail
 	for i, m := range model {
-		SID = ""
-		_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
 		album, video, err := getModelDetail(m.Url)
 		if err != nil {
 			fmt.Printf("faield to get model detail, name: %v, error: %v", m.Name, err.Error())
@@ -365,7 +368,8 @@ func getFileSize(url string, timeout time.Duration) (int64, error) {
 }
 
 func httpGet(url string, timeout time.Duration) ([]byte, error) {
-	time.Sleep(time.Second * 3) //每次都需要10秒或者以上才能发起请求
+	time.Sleep(time.Millisecond * 1500) //每次都需要10秒或者以上才能发起请求
+	fmt.Printf("get url: %v\n", url)
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Printf("failed to new request, error: %v\n", err.Error())
@@ -426,7 +430,6 @@ func doRequest(request *http.Request, timeout time.Duration, start int64, end in
 	resp, err := cli.Do(request)
 	if err != nil {
 		fmt.Printf("do request fail, error: %v\n", err.Error())
-		time.Sleep(time.Second * 60)
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK &&
@@ -470,7 +473,7 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 		dst := dir + "/" + file
 		dstInfo, err := os.Stat(dst)
 		var start int64
-		if os.IsExist(err) {
+		if dstInfo != nil {
 			if size == dstInfo.Size() {
 				//文件存在并且size 相同
 				return
@@ -479,17 +482,18 @@ func downloadFile(dir, file string, url string, timeout time.Duration) error {
 			start = dstInfo.Size()
 		}
 
+
 		fmt.Printf("download file: %v to %s, size: %v\n", url, dst, size)
 		var end int64
 		var idx = 0
-		var r = int64(10 * 1024 * 1024)
+		var r = int64(1 * 1024 * 1024)
 		for ; start < size; start = end + 1 {
 			if size-start <= r {
 				end = size - 1
 			} else {
 				end = start + r - 1
 			}
-			fmt.Printf("download file part %v, file: %s, start: %v, size: %v, total: %v\n", idx, dst, start, end-start+1, size)
+			//fmt.Printf("download file part %v, file: %s, start: %v, size: %v, total: %v\n", idx, dst, start, end-start+1, size)
 			f, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE, 0755)
 			if err != nil {
 				fmt.Printf("failed to open file, error: %v", err.Error())
