@@ -32,7 +32,9 @@ type Model struct {
 
 type Album struct {
 	No     int
+	Name   string
 	Url    string
+	Cover  string
 	Photos []*Photo
 }
 type Photo struct {
@@ -84,7 +86,7 @@ func main() {
 		for _, m := range model {
 			//登录一下
 			SID = ""
-			_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30)
+			_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30, time.Millisecond*1500)
 			for _, a := range m.Albums {
 				fmt.Printf("download album, No: %v, model: %v\n", a.No, m.Name)
 				storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, m.Name, a.No, m.Name)
@@ -119,6 +121,10 @@ func main() {
 			storeDir := fmt.Sprintf("%v/%v/%v-%v", *dir, model, no, model)
 			_ = downloadFile(storeDir, photo.Name, photo.Url, time.Minute*10)
 		}
+	}
+
+	if *t == "tuli" {
+		_, _ = grabTuliMainPage("https://www.tuli.cc", *dir)
 	}
 
 }
@@ -167,7 +173,7 @@ func getAllModels() []*Model {
 
 func getModelList(url string) ([]*Model, error) {
 	//1. 发起请求
-	res, err := httpGet(url, time.Second*time.Duration(30))
+	res, err := httpGet(url, time.Second*time.Duration(30), time.Millisecond*1500)
 	//res, err := readFile("/Users/didi/Desktop/Desktop/BEAUTYLEG 模特兒列表.html")
 	if err != nil {
 		return nil, err
@@ -196,7 +202,7 @@ func getModelList(url string) ([]*Model, error) {
 
 func getModelDetail(url string) ([]*Album, []*Video, error) {
 	//1. 发起请求
-	res, err := httpGet(url, time.Second*time.Duration(30))
+	res, err := httpGet(url, time.Second*time.Duration(30), time.Millisecond*1500)
 	//res, err := readFile("/Users/didi/Desktop/Desktop/model.html")
 	if err != nil {
 		return nil, nil, err
@@ -272,7 +278,7 @@ func getModelDetail(url string) ([]*Album, []*Video, error) {
 
 func getAlbumDetail(url string) ([]*Photo, string, string, error) {
 	//1. 发起请求
-	res, err := httpGet(url, time.Second*time.Duration(30))
+	res, err := httpGet(url, time.Second*time.Duration(30), time.Millisecond*1500)
 	//res, err := readFile("/Users/didi/Desktop/Desktop/BEAUTYLEG　腿模 - 2052 Iris.html")
 	if err != nil {
 		return nil, "", "", err
@@ -310,7 +316,7 @@ func getAlbumDetail(url string) ([]*Photo, string, string, error) {
 
 func getVideoDetail(url string) (string, string, error) {
 	//1. 发起请求
-	res, err := httpGet(url, time.Second*time.Duration(30))
+	res, err := httpGet(url, time.Second*time.Duration(30), time.Millisecond*1500)
 	//res, err := readFile("/Users/didi/Desktop/Desktop/video.html")
 	if err != nil {
 		return "", "", err
@@ -366,8 +372,8 @@ func getFileSize(url string, timeout time.Duration) (int64, error) {
 	return strconv.ParseInt(resp.Header.Get("Content-Length"), 10, 0)
 }
 
-func httpGet(url string, timeout time.Duration) ([]byte, error) {
-	time.Sleep(time.Millisecond * 1500) //每次都需要10秒或者以上才能发起请求
+func httpGet(url string, timeout time.Duration, sleep time.Duration) ([]byte, error) {
+	time.Sleep(sleep) //每次都需要10秒或者以上才能发起请求
 	fmt.Printf("get url: %v\n", url)
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
