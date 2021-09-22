@@ -47,15 +47,15 @@ func grabTuliMainPage(url string, dir string) ([]*Category, error) {
 						break
 					}
 					//更新nextDetailPge
-					nextDetailPage = fmt.Sprintf("%v/%v", c.Url, nextDetailPage)
+					nextDetailPage = fmt.Sprintf("%v%v", c.Url, nextDetailPage)
 					a.Photos = append(a.Photos, photos...)
 				}
 
 				//下载文件
 				storeDir := fmt.Sprintf("%v/%v/%v", dir, c.Name, a.Name)
-				_ = downloadFile(storeDir, "0000.jpg", a.Cover, time.Second*3)
+				_ = downloadFile(storeDir, "0000.jpg", a.Cover, time.Second*60)
 				for _, p := range a.Photos {
-					_ = downloadFile(storeDir, p.Name, p.Url, time.Second*3)
+					_ = downloadFile(storeDir, p.Name, p.Url, time.Second*60)
 				}
 			}
 
@@ -63,7 +63,7 @@ func grabTuliMainPage(url string, dir string) ([]*Category, error) {
 				break
 			}
 
-			next = fmt.Sprintf("%v/%v/%v", c.Url, c.Name, next)
+			next = fmt.Sprintf("%v/%v", c.Url, next)
 			c.Albums = append(c.Albums, as...)
 		}
 	}
@@ -100,7 +100,7 @@ func getTuliCategories(url string) ([]*Category, error) {
 
 func getTuliPageDetail(url string) ([]*Album, string, error) {
 	//1. 请求详情页
-	page, err := httpGet(url, time.Second*3, 0)
+	page, err := httpGet(url, time.Second*3, time.Millisecond*5)
 	if err != nil {
 		fmt.Printf("failed to get category page, url: %v, error: %v\n", url, err.Error())
 		return nil, "", err
@@ -147,7 +147,7 @@ func getTuliPageDetail(url string) ([]*Album, string, error) {
 }
 
 func getTuliPhotoList(url string, min int) ([]*Photo, string, error) {
-	page, err := httpGet(url, time.Second*3, 0)
+	page, err := httpGet(url, time.Second*3, time.Millisecond*5)
 	if err != nil {
 		fmt.Printf("failed to get category page, url: %v, error: %v\n", url, err.Error())
 		return nil, "", err
