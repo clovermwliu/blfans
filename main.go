@@ -55,7 +55,7 @@ var W *semaphore.Weighted //信号量
 func main() {
 	//2. 获取flags
 	dir := flag.String("dir", ".", "blfans --dir=[store path]")
-	t := flag.String("type", "all", "blfans --type=[parse|download|dtest|update]")
+	t := flag.String("type", "all", "blfans --type=[parse|download|dtest|update|tuli|tuli-test]")
 	threads := flag.Int("thread", 1, "blfans --thread=[thread count]")
 	file := flag.String("file", "", "blfans --file=[file path name]")
 	url := flag.String("url", "", "blfans --testUrl=[url]")
@@ -125,6 +125,24 @@ func main() {
 
 	if *t == "tuli" {
 		_, _ = grabTuliMainPage("https://www.tuli.cc", *dir)
+	}
+
+	if *t == "tuli-test" {
+		var allPhoto = make([]*Photo, 0)
+		var nextDetailPage = *url
+		for nextDetailPage != "" {
+			var photos = make([]*Photo, 0)
+			photos, next, err := getTuliPhotoList(nextDetailPage, len(allPhoto))
+			if err != nil {
+				continue
+			}
+			if next == "" {
+				break
+			}
+			//更新nextDetailPge
+			nextDetailPage = fmt.Sprintf("%v/%v", "https://www.tuli.cc/xiuren", next)
+			allPhoto = append(allPhoto, photos...)
+		}
 	}
 
 }

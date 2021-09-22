@@ -157,6 +157,9 @@ func getTuliPhotoList(url string, min int) ([]*Photo, string, error) {
 	root := soup.HTMLParse(string(page))
 	photos := make([]*Photo, 0)
 	imgs := root.Find("p", "class", "bodyintroduce").FindAll("img")
+	if len(imgs) == 0 {
+		imgs = root.Find("div", "id", "postarea").FindAll("img")
+	}
 	for i, img := range imgs {
 		url := img.Attrs()["src"]
 		photos = append(photos, &Photo{
