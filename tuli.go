@@ -17,7 +17,7 @@ type Pager struct {
 	Urls []string
 }
 
-func grabTuliMainPage(url string, dir string) ([]*Category, error) {
+func grabTuliMainPage(url string, dir string, update bool) ([]*Category, error) {
 	//1. 获取所有的category
 	categories, err := getTuliCategories(url)
 	if err != nil {
@@ -35,6 +35,7 @@ func grabTuliMainPage(url string, dir string) ([]*Category, error) {
 				continue
 			}
 			//3. 对每一个album抓取detail
+			var downloadCount = 0
 			for _, a := range as {
 				var nextDetailPage = a.Url
 				for nextDetailPage != "" {
@@ -55,11 +56,17 @@ func grabTuliMainPage(url string, dir string) ([]*Category, error) {
 				storeDir := fmt.Sprintf("%v/%v/%v", dir, c.Name, a.Name)
 				_ = downloadFile(storeDir, "0000.jpg", a.Cover, time.Second*60)
 				for _, p := range a.Photos {
+					//检查文件是否已经存在了
+					if checkFileExist(storeDir, p.Name) {
+						continue
+					}
 					_ = downloadFile(storeDir, p.Name, p.Url, time.Second*60)
+					downloadCount += 1
 				}
 			}
 
-			if next == "" {
+			//如果没有下一页或者本页所有图片都已经存在了，则跳转到下一个category
+			if next == "" || (update && downloadCount == 0) {
 				break
 			}
 

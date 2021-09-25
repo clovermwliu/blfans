@@ -124,25 +124,11 @@ func main() {
 	}
 
 	if *t == "tuli" {
-		_, _ = grabTuliMainPage("https://www.tuli.cc", *dir)
+		_, _ = grabTuliMainPage("https://www.tuli.cc", *dir, false)
 	}
 
-	if *t == "tuli-test" {
-		var allPhoto = make([]*Photo, 0)
-		var nextDetailPage = *url
-		for nextDetailPage != "" {
-			var photos = make([]*Photo, 0)
-			photos, next, err := getTuliPhotoList(nextDetailPage, len(allPhoto))
-			if err != nil {
-				continue
-			}
-			if next == "" {
-				break
-			}
-			//更新nextDetailPge
-			nextDetailPage = fmt.Sprintf("%v/%v", "https://www.tuli.cc/xiuren", next)
-			allPhoto = append(allPhoto, photos...)
-		}
+	if *t == "tuliupdate" {
+		_, _ = grabTuliMainPage("https://www.tuli.cc", *dir, true)
 	}
 
 }
@@ -472,6 +458,12 @@ func doRequest(request *http.Request, timeout time.Duration, start int64, end in
 	}
 
 	return resp, nil
+}
+
+func checkFileExist(dir, file string) bool {
+	dst := dir + "/" + file
+	fi, _ := os.Stat(dst)
+	return fi != nil && !fi.IsDir()
 }
 func downloadFile(dir, file string, url string, timeout time.Duration) error {
 	if err := W.Acquire(context.Background(), 1); err != nil {
