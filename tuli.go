@@ -63,6 +63,11 @@ func grabTuliMainPage(url string, dir string, update bool) ([]*Category, error) 
 					_ = downloadFile(storeDir, p.Name, p.Url, time.Second*60)
 					downloadCount += 1
 				}
+
+				//后面的已经全部下载过了
+				if update && downloadCount == 0 {
+					break
+				}
 			}
 
 			//如果没有下一页或者本页所有图片都已经存在了，则跳转到下一个category
