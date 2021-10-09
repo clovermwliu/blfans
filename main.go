@@ -109,6 +109,9 @@ func main() {
 	}
 
 	if *t == "update" && *url != "" {
+		//登录一下
+		SID = ""
+		_, _ = httpGet("http://www.beautyleg.com/member/index.php", time.Second*30, time.Millisecond*1500)
 		//打开详情页
 		photos, no, model, err := getAlbumDetail(*url)
 		if err != nil {
